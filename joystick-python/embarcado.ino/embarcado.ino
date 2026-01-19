@@ -18,6 +18,11 @@ public:
     ArmController(DynamixelShield* d) {
         dxl = d;
     }
+    
+    void moverPasso(uint8_t id, int passo) {
+            int pos_atual = dxl->getPresentPosition(id);
+            dxl->setGoalPosition(id, pos_atual + passo);
+        }
 
     void moveArmSmooth(
         int target_ombro,
@@ -85,11 +90,17 @@ public:
     void moveToHome() { moveArmSmooth(228, 756, 4, 831, 600);}
     void moveToReady() {moveArmSmooth(512, 756, 3, 829, 600);}
     void moveToPrePick() {moveArmSmooth(517, 1012, 8, 845, 592);}
-    void moveToPick() {moveArmSmooth(499, 1011, 300, 531, 390);}
+    void moveToPick() {
+        int base_atual = dxl->getPresentPosition(DXL_06_OMBRO);
+        moveArmSmooth(base_atual, 1011, 300, 531, 390);
+    }
     void moveToPosPick() {moveArmSmooth(512, 1012, 3, 830, 600);}
     void moveToPlace(){moveArmSmooth(532, 1014, 197, 654, 600);}
     void moveToFront() {moveArmSmooth(547, 950, 300, 530, 600);}
     void moveToPlaceAlto() { moveArmSmooth(525, 561, 600, 683, 600);}
+
+
+
 
     // Controle de Um servo só
     void openHand() {
@@ -113,6 +124,7 @@ public:
           5     
       );
     }
+
 
     void closeHand() {
         moveArmSmooth(
@@ -190,11 +202,17 @@ void setup() {
 }
 
 void loop() {
-  // Verifica se chegou algo via Serial
+  // Verifica se chegou algo via Serial (USB)
   if (Serial.available() > 0) {
     char command = Serial.read(); // Lê o caractere vindo do Python
 
     switch (command) {
+      case '1': // Analógico Esquerdo segurado
+         arm.moverPasso(DXL_06_OMBRO, 15); 
+                break;
+            case '2': // Analógico Direito segurado
+                arm.moverPasso(DXL_06_OMBRO, -15); 
+                break;
       case 'B': // Mapeado para LB
         arm.moveToPrePick();
         break;
