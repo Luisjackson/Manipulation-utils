@@ -46,7 +46,7 @@ python3 control_joystick.py
 | **LB** | Move para PRE-PICK | `B` |
 | **RB** | Move para PICK | `K` |
 | **Start** | Posição HOME | `H` |
-| **Select** | Posição READY | `R` 
-| **Botão ON/OFF* | Posição PLACE ALTO | `M` 
+| **Select** | Posição READY | `R` |
+| **Botão ON/OFF** | Posição PLACE ALTO | `M` |
 
 ---
