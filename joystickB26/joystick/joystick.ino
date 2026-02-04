@@ -20,21 +20,14 @@ junta7 - motor9 - 1 gripper
 #include "smoothservo.h"
 
 LX16A motor0(0, Serial); // lift
-
-LX16A motor1(1, Serial) // Junta 1 (base/giro)
-
-LX16A motor2(2, Serial) // junta2
-LX16A motor3(3, Serial) // junta2
-
-LX16A motor4(4, Serial) // junta3
-LX16A motor5(5, Serial) // junta3
-
+LX16A motor1(1, Serial); // Junta 1 (base/giro)
+LX16A motor2(2, Serial); // junta2
+LX16A motor3(3, Serial); // junta2
+LX16A motor4(4, Serial); // junta3
+LX16A motor5(5, Serial); // junta3
 LX16A motor6(6, Serial);  // junta 4
-
 LX16A motor7(7, Serial);  // junta 5
-
 LX16A motor8(8, Serial);  // junta 6
-
 LX16A motor9(9, Serial);  // junta 7
 
 // Smooth motor mode operation:
@@ -43,6 +36,7 @@ SmoothMotor smotor0(motor0);  //Lift
 const int botaoPin = 19; // Pino onde o botão esta conectado
 const int botaoFimCursoSuperiorPin = 12;  // Fim de Curso Superior
 const int botaoFimCursoInferiorPin = 26;  // Fim de curso Inferiorconst int buzzerPin = 16;                 // Pino onde o buzzer está conectado
+const int buzzerPin = 16;
 const int ledPin = 2;                     // Pino onde o buzzer está conectado
 int temp;
 
@@ -75,6 +69,14 @@ void homePosition() {
   delay(1000);
 }
 
+void openHand() {
+  // Exemplo: Motor 9 é o gripper
+  motor9.move(110); 
+}
+
+void closeHand() {
+  motor9.move(35); 
+}
 
  // TODO - ESTA FORA DE ORDEM. ORGANIZAR. 
 
@@ -88,7 +90,7 @@ void homePosition() {
  // RETURN HOME
  
 void setup(){
-    Serial.begin(115200);
+  Serial.begin(115200);
 
   motor0.initialize();
   motor0.enableTorque();
@@ -135,7 +137,43 @@ void setup(){
   pinMode(botaoFimCursoSuperiorPin, INPUT_PULLUP);  // Configura o pino do botão com pull-up interno
   pinMode(botaoFimCursoInferiorPin, INPUT_PULLUP);  // Configura o pino do botão com pull-up interno
 
+  pinMode(buzzerPin, OUTPUT);  // Configura o pino do buzzer como saída
+  pinMode(ledPin, OUTPUT);     //Define a porta do led como saida
 
-  
+  smotor0.start(1000);
 
+  homePosition();  //Posiçao default inicial
+  delay(1000);
+
+}
+
+void loop() {
+  unsigned long ms = millis();
+
+  // ATUALIZAÇÃO DOS MOVIMENTOS (Obrigatório para a suavidade funcionar)
+  smotor0.update(ms);
+  // sGiro.update(ms);
+  // sBracoA.update(ms);
+  // sBracoB.update(ms);
+  // sAnteA.update(ms);
+  // sAnteB.update(ms);
+
+  if (Serial.available() > 0) {
+    char command = Serial.read();
+
+    switch (command) {
+      case 'H': // Home
+        homePosition();
+        break;
+
+      case 'O': // Open Hand
+        openHand();
+        break;
+
+      case 'C': // Close Hand
+        closeHand();
+        break;
+
+    }
+  }
 }
