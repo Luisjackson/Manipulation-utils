@@ -37,15 +37,15 @@ try:
         for event in pygame.event.get():
             if event.type == pygame.JOYBUTTONDOWN:
 
-                if event.button == 0:   arduino.write(b'P'); print("Ação: Sequência PICK")
-                elif event.button == 1: arduino.write(b'L'); print("Ação: Sequência PLACE")
-                elif event.button == 2: arduino.write(b'C'); print("Ação: Fecha Garra")
-                elif event.button == 3: arduino.write(b'O'); print("Ação: Abre Garra")
-                elif event.button == 4: arduino.write(b'B'); print("Ação: Pre-Pick")
-                elif event.button == 5: arduino.write(b'K'); print("Ação: Pick Position")
-                elif event.button == 6: arduino.write(b'R'); print("Ação: Ready")
-                elif event.button == 7: arduino.write(b'H'); print("Ação: Home")
-                elif event.button == 11: arduino.write(b'M'); print("Ação: Place Alto")
+                if event.button == 0:   arduino.write(b'P'); print("Ação: Sequência PICK") #botao A
+                elif event.button == 1: arduino.write(b'L'); print("Ação: Sequência PLACE") #botao B
+                elif event.button == 2: arduino.write(b'C'); print("Ação: Fecha Garra") #botao X
+                elif event.button == 3: arduino.write(b'O'); print("Ação: Abre Garra") #botao Y
+                elif event.button == 4: arduino.write(b'B'); print("Ação: Pre-Pick") #botao LB
+                elif event.button == 5: arduino.write(b'K'); print("Ação: Pick Position") #botao RB
+                elif event.button == 6: arduino.write(b'R'); print("Ação: Pre home alto") #botao SELECT
+                elif event.button == 7: arduino.write(b'H'); print("Ação: Home") #botao START
+                elif event.button == 8: arduino.write(b'M'); print("Ação: Place Alto") 
 
                 if event.button in [9, 10]:
                     botoes_continuos.add(event.button)

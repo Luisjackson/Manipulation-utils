@@ -89,6 +89,7 @@ public:
     // Poses
     void moveToHome() { moveArmSmooth(228, 756, 4, 831, 600);}
     void moveToReady() {moveArmSmooth(512, 756, 3, 829, 600);}
+    void moveToPreHome() {moveArmSmooth(533, 549, 525, 530, 422);}
     void moveToPrePick() {moveArmSmooth(517, 1012, 8, 845, 592);}
     void moveToPick() {
         int base_atual = dxl->getPresentPosition(DXL_06_OMBRO);
@@ -234,13 +235,13 @@ void loop() {
       case 'O': // Open Hand
         arm.openHand();
         break;
-      case 'R': // Ready
-        arm.moveToReady();
+      case 'R': // mover para posição pos alto pre home
+        arm.moveToPreHome();
         break;
       case 'D': // Descer
         arm.descerGarra();
         break;
-      case 'M':
+      case 'M': // Mover para posição alto
         arm.moveToPlaceAlto();
         break;
     }
