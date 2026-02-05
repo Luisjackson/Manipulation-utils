@@ -3,7 +3,7 @@ import serial
 import time
 
 # Configurações
-PORTA_SERIAL = "/dev/ttyACM0" 
+PORTA_SERIAL = "/dev/ttyUSB0" 
 BAUD_RATE = 115200
 
 pygame.init()

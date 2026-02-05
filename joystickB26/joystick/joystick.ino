@@ -13,7 +13,6 @@ junta7 - motor9 - 1 gripper
 
 */
 
-
 #include <Arduino.h>
 #include "LX16A-bus.h"
 #include "smoothmotor.h"
@@ -39,11 +38,20 @@ const int botaoFimCursoInferiorPin = 26;  // Fim de curso Inferiorconst int buzz
 const int buzzerPin = 16;
 const int ledPin = 2;                     // Pino onde o buzzer está conectado
 int temp;
+int posMotor1 = 105;
+
+
+// Função para mover a Junta 2 de forma sincronizada
+void moverJunta2(int angulo) {
+  int offset = 240;
+  motor2.move(angulo);
+  motor3.move(offset - angulo);
+}
 
 //Home homePosition
 void homePosition() {
   digitalWrite(2, LOW);         // Apaga o Led
-  tone(buzzerPin, 2600, 1500);  // // Toca 1500 Hz por 400ms
+  //tone(buzzerPin, 2600, 1500);  // // Toca 1500 Hz por 400ms
 
   motor7.move(25);
   delay(1000);
@@ -57,6 +65,7 @@ void homePosition() {
   delay(1000);
 
   motor1.move(105);  // Giro, 105 posiçao default, no meio virado para a frente
+  posMotor1 = 105;
   delay(1000);
 
   motor6.move(110);
@@ -70,7 +79,6 @@ void homePosition() {
 }
 
 void openHand() {
-  // Exemplo: Motor 9 é o gripper
   motor9.move(110); 
 }
 
@@ -78,16 +86,97 @@ void closeHand() {
   motor9.move(35); 
 }
 
- // TODO - ESTA FORA DE ORDEM. ORGANIZAR. 
+void pick() {
+  digitalWrite(2, LOW);         // Apaga o Led
+  //tone(buzzerPin, 2600, 1500);  // // Toca 1500 Hz por 400ms
 
+  motor7.move(20); //25
+  delay(2000);
 
- // OPEN HAND
- // MOVE TO PICK(MOVE PRA PERTO DO OBJETO)
- // APPROACH OBJECT (PEGAR OBJETO)
- // CLOSE HAND
- // PICK POSITION
- // RETREAT
- // RETURN HOME
+  motor1.move(190);  //Giro 195
+  delay(2000);
+
+  //AJuste fino
+  motor2.move(115);  //110
+  motor3.move(240 - 115);
+  delay(1000);
+
+  motor4.move(80); //80
+  motor5.move(240 - 80 - 15);  // 15 e "ajuste mecanico"
+  delay(1000);
+
+  motor6.move(110);
+  delay(2000);
+
+  motor8.move(145);
+  delay(2000);
+
+  motor9.move(35);  // Angry Birds = 35 - segura Angry Birds
+  delay(2000);
+
+  motor1.move(103);  // Giro, 105 posiçao default, no meio virado para a frente
+  delay(2000);
+
+  //motor9.move(110); //Larga Angry Birds
+  //delay(2000);
+
+  // motor2.move(100);  //100
+  // motor3.move(240 - 100);
+  // delay(2000);
+
+  // motor4.move(80);             //80
+  // motor5.move(240 - 80 - 15);  // 15 e "ajuste mecanico"
+  // delay(2000);
+
+}
+
+void moveTest() {
+  digitalWrite(2, LOW);         // Apaga o Led
+  tone(buzzerPin, 2600, 1500);  // // Toca 1500 Hz por 400ms
+  
+  // motor7.move(20); //25
+  // delay(2000);
+
+  // motor1.move(190);  //Giro 195
+  // delay(2000);
+
+  //AJuste fino
+  
+  // Limite 90
+  // Quanto mais baixo mais pra tŕas
+  motor2.move(150);  //110
+  motor3.move(240 - 150);
+  delay(1000);
+
+  // motor4.move(80); //80
+  // motor5.move(240 - 80 - 15);  // 15 e "ajuste mecanico"
+  // delay(1000);
+
+  // motor6.move(110);
+  // delay(2000);
+
+  // motor8.move(145);
+  // delay(2000);
+
+  // motor9.move(35);  // Angry Birds = 35 - segura Angry Birds
+  // delay(2000);
+
+  // motor1.move(103);  // Giro, 105 posiçao default, no meio virado para a frente
+  // delay(2000);
+
+  //motor9.move(110); //Larga Angry Birds
+  //delay(2000);
+
+  // motor2.move(100);  //100
+  // motor3.move(240 - 100);
+  // delay(2000);
+
+  // motor4.move(80);             //80
+  // motor5.move(240 - 80 - 15);  // 15 e "ajuste mecanico"
+  // delay(2000);
+
+}
+
  
 void setup(){
   Serial.begin(115200);
@@ -148,10 +237,9 @@ void setup(){
 }
 
 void loop() {
-  unsigned long ms = millis();
-
+  // unsigned long ms = millis();
   // ATUALIZAÇÃO DOS MOVIMENTOS (Obrigatório para a suavidade funcionar)
-  smotor0.update(ms);
+  // smotor0.update(ms);
   // sGiro.update(ms);
   // sBracoA.update(ms);
   // sBracoB.update(ms);
@@ -162,7 +250,7 @@ void loop() {
     char command = Serial.read();
 
     switch (command) {
-      case 'H': // Home
+      case 'M': // Home
         homePosition();
         break;
 
@@ -174,6 +262,21 @@ void loop() {
         closeHand();
         break;
 
+      case 'P': // Pick
+        pick();
+        break;
+
+      case 'B':
+        posMotor1 += 10;
+        if (posMotor1 > 240) posMotor1 = 240;
+        motor1.move(posMotor1, 500);
+        break;
+
+      case 'K': 
+        posMotor1 -= 10;
+        if (posMotor1 < 0) posMotor1 = 0;
+        motor1.move(posMotor1, 500);
+        break;
     }
   }
 }
