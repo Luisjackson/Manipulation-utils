@@ -43,6 +43,7 @@ int temp;
 int posMotor1 = 105; 
 int posJunta2 = 110; // Motor 2 e 3
 int posJunta3 = 80; // Motor 4 e 5
+int posMotor7 = 25;
 int posMotor9 = 110;
 
 // Motor mapeado inicialmente
@@ -60,29 +61,31 @@ void homePosition() {
   digitalWrite(2, LOW);         // Apaga o Led
   //tone(buzzerPin, 2600, 1500);  // // Toca 1500 Hz por 400ms
 
-  motor7.move(25);
+  motor7.move(25, 500);
+  posMotor7 = 25;
   delay(1000);
 
-  motor2.move(110);
-  motor3.move(240 - 110);
+  motor2.move(110, 500);
+  motor3.move(240 - 110, 500);
   posJunta2 = 110;
   delay(1000);
 
-  motor4.move(80);
-  motor5.move(240 - 80 - 15);  // 15 e "ajuste mecanico"
+  motor4.move(80, 500);
+  motor5.move(240 - 80 - 15, 500);  // 15 e "ajuste mecanico"
+  posJunta3 = 80;
   delay(1000);
 
-  motor1.move(105);  // Giro, 105 posiçao default, no meio virado para a frente
+  motor1.move(105, 500);  // Giro, 105 posiçao default, no meio virado para a frente
   posMotor1 = 105;
   delay(1000);
 
-  motor6.move(110);
+  motor6.move(110, 500);
   delay(1000);
 
-  motor8.move(145);
+  motor8.move(145, 500);
   delay(2000);
 
-  motor9.move(110);
+  motor9.move(110, 500);
   posMotor9 = 110;
   delay(1000);
 }
@@ -260,6 +263,7 @@ void loop() {
 
       case 'H': motorSelecionado = 2; break; // Seleciona a Junta 2 (motores 2 e 3)
       case 'N': motorSelecionado = 4; break;// Seleciona Antebraço (Motores 4 e 5)
+      case 'D': motorSelecionado = 7; break; 
       case 'L': motorSelecionado = 9; break;
 
       case 'B': // INCREMENTAR
@@ -274,11 +278,16 @@ void loop() {
             motor2.move(posJunta2, 500);
             motor3.move(240 - posJunta2, 500); 
         }
-        else if (motorSelecionado == 4) { // Lógica Antebraço
+        else if (motorSelecionado == 4) {
             posJunta3 += 10;
             if (posJunta3 > 240) posJunta3 = 240;
             motor4.move(posJunta3, 500);
             motor5.move(240 - posJunta3 - 15, 500);
+        }
+        else if (motorSelecionado == 7) { 
+            posMotor7 += 10;
+            if (posMotor7 > 240) posMotor7 = 240;
+            motor7.move(posMotor7, 500);
         }
         else if (motorSelecionado == 9) {
             posMotor9 += 10;
@@ -299,11 +308,16 @@ void loop() {
             motor2.move(posJunta2, 500);
             motor3.move(240 - posJunta2, 500);
         }
-        else if (motorSelecionado == 4) { // Lógica Antebraço
+        else if (motorSelecionado == 4) {
             posJunta3 -= 10;
             if (posJunta3 < 0) posJunta3 = 0;
             motor4.move(posJunta3, 500);
             motor5.move(240 - posJunta3 - 15, 500); 
+        }
+        else if (motorSelecionado == 7) {
+            posMotor7 -= 10;
+            if (posMotor7 < 0) posMotor7 = 0;
+            motor7.move(posMotor7, 500);
         }
         else if (motorSelecionado == 9) {
             posMotor9 -= 10;
