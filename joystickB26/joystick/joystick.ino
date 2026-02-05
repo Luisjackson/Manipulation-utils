@@ -38,8 +38,15 @@ const int botaoFimCursoInferiorPin = 26;  // Fim de curso Inferiorconst int buzz
 const int buzzerPin = 16;
 const int ledPin = 2;                     // Pino onde o buzzer está conectado
 int temp;
-int posMotor1 = 105;
 
+// Mapeamento de cada posição
+int posMotor1 = 105; 
+int posJunta2 = 110; // Motor 2 e 3
+int posJunta3 = 80; // Motor 4 e 5
+int posMotor9 = 110;
+
+// Motor mapeado inicialmente
+int motorSelecionado = 1;
 
 // Função para mover a Junta 2 de forma sincronizada
 void moverJunta2(int angulo) {
@@ -58,6 +65,7 @@ void homePosition() {
 
   motor2.move(110);
   motor3.move(240 - 110);
+  posJunta2 = 110;
   delay(1000);
 
   motor4.move(80);
@@ -75,6 +83,7 @@ void homePosition() {
   delay(2000);
 
   motor9.move(110);
+  posMotor9 = 110;
   delay(1000);
 }
 
@@ -237,45 +246,70 @@ void setup(){
 }
 
 void loop() {
-  // unsigned long ms = millis();
-  // ATUALIZAÇÃO DOS MOVIMENTOS (Obrigatório para a suavidade funcionar)
-  // smotor0.update(ms);
-  // sGiro.update(ms);
-  // sBracoA.update(ms);
-  // sBracoB.update(ms);
-  // sAnteA.update(ms);
-  // sAnteB.update(ms);
+
 
   if (Serial.available() > 0) {
     char command = Serial.read();
 
     switch (command) {
-      case 'M': // Home
-        homePosition();
+      case 'M': homePosition(); break;
+      case 'O': openHand(); break;
+      case 'C': closeHand(); break;
+
+      case 'P': motorSelecionado = 1; break;
+
+      case 'H': motorSelecionado = 2; break; // Seleciona a Junta 2 (motores 2 e 3)
+      case 'N': motorSelecionado = 4; break;// Seleciona Antebraço (Motores 4 e 5)
+      case 'L': motorSelecionado = 9; break;
+
+      case 'B': // INCREMENTAR
+        if (motorSelecionado == 1) {
+            posMotor1 += 10;
+            if (posMotor1 > 240) posMotor1 = 240;
+            motor1.move(posMotor1, 500);
+        } 
+        else if (motorSelecionado == 2) {
+            posJunta2 += 10;
+            if (posJunta2 > 240) posJunta2 = 240;
+            motor2.move(posJunta2, 500);
+            motor3.move(240 - posJunta2, 500); 
+        }
+        else if (motorSelecionado == 4) { // Lógica Antebraço
+            posJunta3 += 10;
+            if (posJunta3 > 240) posJunta3 = 240;
+            motor4.move(posJunta3, 500);
+            motor5.move(240 - posJunta3 - 15, 500);
+        }
+        else if (motorSelecionado == 9) {
+            posMotor9 += 10;
+            if (posMotor9 > 240) posMotor9 = 240;
+            motor9.move(posMotor9, 500);
+        }
         break;
 
-      case 'O': // Open Hand
-        openHand();
-        break;
-
-      case 'C': // Close Hand
-        closeHand();
-        break;
-
-      case 'P': // Pick
-        pick();
-        break;
-
-      case 'B':
-        posMotor1 += 10;
-        if (posMotor1 > 240) posMotor1 = 240;
-        motor1.move(posMotor1, 500);
-        break;
-
-      case 'K': 
-        posMotor1 -= 10;
-        if (posMotor1 < 0) posMotor1 = 0;
-        motor1.move(posMotor1, 500);
+      case 'K': // DECREMENTAR
+        if (motorSelecionado == 1) {
+            posMotor1 -= 10;
+            if (posMotor1 < 0) posMotor1 = 0;
+            motor1.move(posMotor1, 500);
+        } 
+        else if (motorSelecionado == 2) { 
+            posJunta2 -= 10;
+            if (posJunta2 < 0) posJunta2 = 0;
+            motor2.move(posJunta2, 500);
+            motor3.move(240 - posJunta2, 500);
+        }
+        else if (motorSelecionado == 4) { // Lógica Antebraço
+            posJunta3 -= 10;
+            if (posJunta3 < 0) posJunta3 = 0;
+            motor4.move(posJunta3, 500);
+            motor5.move(240 - posJunta3 - 15, 500); 
+        }
+        else if (motorSelecionado == 9) {
+            posMotor9 -= 10;
+            if (posMotor9 < 0) posMotor9 = 0;
+            motor9.move(posMotor9, 500);
+        }
         break;
     }
   }
