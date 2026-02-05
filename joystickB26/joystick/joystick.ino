@@ -43,6 +43,7 @@ int temp;
 int posMotor1 = 105; 
 int posJunta2 = 110; // Motor 2 e 3
 int posJunta3 = 80; // Motor 4 e 5
+int posMotor6 = 110;
 int posMotor7 = 25;
 int posMotor9 = 110;
 
@@ -80,6 +81,7 @@ void homePosition() {
   delay(1000);
 
   motor6.move(110, 500);
+  posMotor6 = 110;
   delay(1000);
 
   motor8.move(145, 500);
@@ -263,8 +265,10 @@ void loop() {
 
       case 'H': motorSelecionado = 2; break; // Seleciona a Junta 2 (motores 2 e 3)
       case 'N': motorSelecionado = 4; break;// Seleciona Antebraço (Motores 4 e 5)
+      case 'R': motorSelecionado = 6; break;
       case 'D': motorSelecionado = 7; break; 
       case 'L': motorSelecionado = 9; break;
+
 
       case 'B': // INCREMENTAR
         if (motorSelecionado == 1) {
@@ -283,6 +287,11 @@ void loop() {
             if (posJunta3 > 240) posJunta3 = 240;
             motor4.move(posJunta3, 500);
             motor5.move(240 - posJunta3 - 15, 500);
+        }
+        else if (motorSelecionado == 6) {
+            posMotor6 += 10;
+            if (posMotor6 > 240) posMotor6 = 240;
+            motor6.move(posMotor6, 500);
         }
         else if (motorSelecionado == 7) { 
             posMotor7 += 10;
@@ -313,6 +322,11 @@ void loop() {
             if (posJunta3 < 0) posJunta3 = 0;
             motor4.move(posJunta3, 500);
             motor5.move(240 - posJunta3 - 15, 500); 
+        }
+        else if (motorSelecionado == 6) { 
+            posMotor6 -= 10;
+            if (posMotor6 < 0) posMotor6 = 0;
+            motor6.move(posMotor6, 500);
         }
         else if (motorSelecionado == 7) {
             posMotor7 -= 10;
