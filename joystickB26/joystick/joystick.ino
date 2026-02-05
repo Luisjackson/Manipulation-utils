@@ -1,5 +1,4 @@
 /* 
-
 junta0 - motor0 - lift
 junta1 - motor1 - giro
 junta2 - motor2 - braço
@@ -10,7 +9,6 @@ junta4 - motor6 - 1 servo
 junta5 - motor7 - 1 
 junta6 - motor8 - 1 
 junta7 - motor9 - 1 gripper
-
 */
 
 #include <Arduino.h>
@@ -30,13 +28,13 @@ LX16A motor8(8, Serial);  // junta 6
 LX16A motor9(9, Serial);  // junta 7
 
 // Smooth motor mode operation:
-SmoothMotor smotor0(motor0);  //Lift
+SmoothMotor smotor0(motor0);  //Elevador
 
 const int botaoPin = 19; // Pino onde o botão esta conectado
-const int botaoFimCursoSuperiorPin = 12;  // Fim de Curso Superior
-const int botaoFimCursoInferiorPin = 26;  // Fim de curso Inferiorconst int buzzerPin = 16;                 // Pino onde o buzzer está conectado
+const int botaoFimCursoSuperiorPin = 12; 
+const int botaoFimCursoInferiorPin = 26;                
 const int buzzerPin = 16;
-const int ledPin = 2;                     // Pino onde o buzzer está conectado
+const int ledPin = 2;               
 int temp;
 
 // Mapeamento de cada posição
@@ -45,22 +43,15 @@ int posJunta2 = 110; // Motor 2 e 3
 int posJunta3 = 80; // Motor 4 e 5
 int posMotor6 = 110;
 int posMotor7 = 25;
+int posMotor8 = 145;
 int posMotor9 = 110;
 
 // Motor mapeado inicialmente
 int motorSelecionado = 1;
 
-// Função para mover a Junta 2 de forma sincronizada
-void moverJunta2(int angulo) {
-  int offset = 240;
-  motor2.move(angulo);
-  motor3.move(offset - angulo);
-}
-
-//Home homePosition
 void homePosition() {
   digitalWrite(2, LOW);         // Apaga o Led
-  //tone(buzzerPin, 2600, 1500);  // // Toca 1500 Hz por 400ms
+  tone(buzzerPin, 2600, 1500);  // // Toca 1500 Hz por 400ms
 
   motor7.move(25, 500);
   posMotor7 = 25;
@@ -85,6 +76,7 @@ void homePosition() {
   delay(1000);
 
   motor8.move(145, 500);
+  posMotor8 = 145;
   delay(2000);
 
   motor9.move(110, 500);
@@ -100,130 +92,19 @@ void closeHand() {
   motor9.move(35); 
 }
 
-void pick() {
-  digitalWrite(2, LOW);         // Apaga o Led
-  //tone(buzzerPin, 2600, 1500);  // // Toca 1500 Hz por 400ms
-
-  motor7.move(20); //25
-  delay(2000);
-
-  motor1.move(190);  //Giro 195
-  delay(2000);
-
-  //AJuste fino
-  motor2.move(115);  //110
-  motor3.move(240 - 115);
-  delay(1000);
-
-  motor4.move(80); //80
-  motor5.move(240 - 80 - 15);  // 15 e "ajuste mecanico"
-  delay(1000);
-
-  motor6.move(110);
-  delay(2000);
-
-  motor8.move(145);
-  delay(2000);
-
-  motor9.move(35);  // Angry Birds = 35 - segura Angry Birds
-  delay(2000);
-
-  motor1.move(103);  // Giro, 105 posiçao default, no meio virado para a frente
-  delay(2000);
-
-  //motor9.move(110); //Larga Angry Birds
-  //delay(2000);
-
-  // motor2.move(100);  //100
-  // motor3.move(240 - 100);
-  // delay(2000);
-
-  // motor4.move(80);             //80
-  // motor5.move(240 - 80 - 15);  // 15 e "ajuste mecanico"
-  // delay(2000);
-
-}
-
-void moveTest() {
-  digitalWrite(2, LOW);         // Apaga o Led
-  tone(buzzerPin, 2600, 1500);  // // Toca 1500 Hz por 400ms
-  
-  // motor7.move(20); //25
-  // delay(2000);
-
-  // motor1.move(190);  //Giro 195
-  // delay(2000);
-
-  //AJuste fino
-  
-  // Limite 90
-  // Quanto mais baixo mais pra tŕas
-  motor2.move(150);  //110
-  motor3.move(240 - 150);
-  delay(1000);
-
-  // motor4.move(80); //80
-  // motor5.move(240 - 80 - 15);  // 15 e "ajuste mecanico"
-  // delay(1000);
-
-  // motor6.move(110);
-  // delay(2000);
-
-  // motor8.move(145);
-  // delay(2000);
-
-  // motor9.move(35);  // Angry Birds = 35 - segura Angry Birds
-  // delay(2000);
-
-  // motor1.move(103);  // Giro, 105 posiçao default, no meio virado para a frente
-  // delay(2000);
-
-  //motor9.move(110); //Larga Angry Birds
-  //delay(2000);
-
-  // motor2.move(100);  //100
-  // motor3.move(240 - 100);
-  // delay(2000);
-
-  // motor4.move(80);             //80
-  // motor5.move(240 - 80 - 15);  // 15 e "ajuste mecanico"
-  // delay(2000);
-
-}
-
- 
 void setup(){
   Serial.begin(115200);
 
-  motor0.initialize();
-  motor0.enableTorque();
-
-  motor1.initialize();
-  motor1.enableTorque();
-
-  motor2.initialize();
-  motor2.enableTorque();
-
-  motor3.initialize();
-  motor3.enableTorque();
-
-  motor4.initialize();
-  motor4.enableTorque();
-
-  motor5.initialize();
-  motor5.enableTorque();
-
-  motor6.initialize();
-  motor6.enableTorque();
-
-  motor7.initialize();
-  motor7.enableTorque();
-
-  motor8.initialize();
-  motor8.enableTorque();
-
-  motor9.initialize();
-  motor9.enableTorque();
+  motor0.initialize(); motor0.enableTorque();
+  motor1.initialize(); motor1.enableTorque();
+  motor2.initialize(); motor2.enableTorque();
+  motor3.initialize(); motor3.enableTorque();
+  motor4.initialize(); motor4.enableTorque();
+  motor5.initialize(); motor5.enableTorque();
+  motor6.initialize(); motor6.enableTorque();
+  motor7.initialize(); motor7.enableTorque();
+  motor8.initialize(); motor8.enableTorque();
+  motor9.initialize(); motor9.enableTorque();
 
   motor0.setMotorMode(0);
   motor1.setServoMode();
@@ -251,7 +132,6 @@ void setup(){
 }
 
 void loop() {
-
 
   if (Serial.available() > 0) {
     char command = Serial.read();
